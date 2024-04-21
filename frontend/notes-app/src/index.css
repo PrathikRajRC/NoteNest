@@ -20,8 +20,12 @@
 @layer components {
 
   .input-box{
-    @apply w-full text-sm bg-transparent border-[1.5px] px-5 py-3 rounded mb-4 outline-none;
-      
 
+    @apply w-full text-sm bg-transparent border-[1.5px] px-5 py-3 rounded mb-4 outline-none;
   }
+      
+  .btn-primary{
+      @apply w-full text-sm bg-primary text-white p-2 hover:bg-blue-600 border-[1.5px] px-5 py-3 rounded mb-5 outline-none;
+  }
+
 }

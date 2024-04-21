@@ -1,21 +1,65 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Navbar from '../../components/Navbar/Navbar';
 import { Link } from 'react-router-dom';
+import Passwordinput from '../../components/input/Passwordinput';
+import { validateEmail } from '../../utils/helper.js';
+
 
 const Login = () => {
-    return <>
+
+    const [email , setEmail] = useState("");
+    const [password , setPassword] = useState("");
+    const [error, setError] = useState(null);
+
+    const handleLogin = async (e) => {
+        e.preventDefault();
+
+        if(!validateEmail(email)){
+            setError("Please enter a valid email");
+            return;
+        }
+
+        if (!password) {
+            setError("Please enter a password");
+            return;
+        }
+
+        setError("");
+    };
+
+    return (
+    <>
         <Navbar/>
 
-        <div className='flex items-centre justify-centre mt-28'>
+        <div className='flex items-centre justify-center mt-28'>
             <div className='w-96 border rounded bg-white px-7 py-10'>
-                <form onSubmit={() => {}}>
+                <form onSubmit={handleLogin}>
                     <h4 className='text-2xl mb-7'>Login</h4>
 
-                    <input type="text" placeholder='Email' className='input-box' />
+                    <input 
+                        type="text" 
+                        placeholder='Email'
+                        className='input-box' 
+                        value={email} 
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
 
-                    <button type='submit' className='btn-primary'> Login </button>
+                    <Passwordinput 
+                        value={password} 
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
 
-                    <p className='text-sm text-centre mt-4'>
+                    {
+                        error && <p className='text-red-500 text-sh pb-1'>{error}</p>
+                    }
+
+                    <button type='submit' className='btn-primary'> 
+                    
+                    Login 
+                    
+                    </button>
+
+                    <p className='text-sm text-center mt-4'>
                         Not registered yet? {""}
                         <Link to='/signup' className='font-medium text-primary underline'>
                             Create an Account
@@ -26,8 +70,8 @@ const Login = () => {
             </div>
 
         </div>
-    </>;
+    </>
 
-};
+)};
 
 export default Login;
