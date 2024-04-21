@@ -2,6 +2,7 @@ import React , {useState} from 'react';
 import Navbar from '../../components/Navbar/Navbar';
 import { Link } from 'react-router-dom';
 import Passwordinput from '../../components/input/Passwordinput';
+import { validateEmail } from '../../utils/helper.js';
 
 const SignUp = () => {
 
@@ -10,8 +11,24 @@ const SignUp = () => {
     const [password , setPassword] = useState("");
     const [error, setError] = useState(null);
 
-    const handleSignup = () => {
+    const handleSignup = async (e) => {
         e.preventDefault();
+        
+        if(!name) {
+            setError("Name is required");
+            return;
+        }
+
+        if(!validateEmail(email)){
+            setError("Please enter a valid email");
+            return;
+        }
+        if (!password) {
+            setError("Please enter a password");
+            return;
+        }
+
+        setError("");
     };
 
     return (
