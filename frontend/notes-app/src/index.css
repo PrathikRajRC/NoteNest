@@ -32,4 +32,8 @@
     @apply text-xl text-slate-300 cursor-pointer hover:text-primary;
   }
 
+  .imput-label{
+    @apply text-xs text-slate-400;
+  }
+
 }
