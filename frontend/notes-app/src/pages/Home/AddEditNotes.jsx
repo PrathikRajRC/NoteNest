@@ -1,21 +1,51 @@
 import React , {useState}from "react";
 import TagInput from "../../components/input/TagInput";
+import { MdClose } from "react-icons/md";
 
-const AddEditNotes = () => {
+const AddEditNotes = ({onClose, type, noteData}) => {
     
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [tags, setTags] = useState([]);
     
+    const [error, setError] = useState(null);
+
+    const addNewNote = async () => {};
+
+    const editNotes = async () => {};
+
+    const handleAddNote = () => {
+        if(!title){
+            setError("Title is required");
+            return;
+        }
+        if(!content){
+            setError("Content is required");
+            return;
+        }
+        setError('');
+
+        if(type === 'edit'){
+            editNotes();
+        }else{
+            addNewNote();
+        }
+    };
     return (
-        <div>
+        <div className="relative">
+            <button
+                className="w-10 h-10 rounded-full flex items-center justify-center absolute -top-3 -right-3 hover:bg-slate-50"
+                onClick={onClose}
+            >
+                <MdClose className='text-xl text-slate-400' />
+            </button>
             <div className=" flex flex-col gap-2">
                 <label className="input-label">Title</label>
 
                 <input 
                     type="text"
-                    className="text-xl text-slate-950 outline-none bg-slate-50"
-                    placeholder="Go to Gym XD"
+                    className="text-xl text-slate-950 outline-none bg-white"
+                    placeholder="Main Title"
                     value={title}
                     onChange={({ target }) => setTitle(target.value)}
                 />
@@ -26,7 +56,7 @@ const AddEditNotes = () => {
                 <textarea 
                     type="text"
                     className="text-sm text-slate-950 outline-none bg-slate-50 p-2 rounded"
-                    placeholder="Content"
+                    placeholder="Write down whats on your mind...."
                     rows={10}
                     value={content}
                     onChange={({ target }) => setContent(target.value)}
@@ -37,8 +67,10 @@ const AddEditNotes = () => {
                 <label className="input-label">Tags</label>
                 <TagInput tags={tags} setTags={setTags}/>
             </div>
-
-            <button className="btn-primary font-medium mt-5 p-3" onClick={() =>{}}>
+            {error && <p className='text-red-500 text-xs pt-4'>{error}</p>}
+            <button 
+                className="btn-primary font-medium mt-5 p-3" 
+                onClick={handleAddNote}>
                 Add
             </button>
         </div>
