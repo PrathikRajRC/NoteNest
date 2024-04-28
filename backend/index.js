@@ -23,6 +23,7 @@ app.use(cors({origin: '*'}));
 app.get("/", (req, res) => {
     res.json({ data: "Hello!" });
 });
+
 // Create Account
 app.post("/create-account", async (req, res) => {
     const {fullName, email, password} = req.body;
@@ -103,13 +104,47 @@ app.post("/login", async (req, res) => {
 });
 
 // Add Notes
-
 app.post('/add-note', autenticateToken, async (req, res) => {
+    const { title, content, tags } = req.body;
+    
+    if (!title) {
+        return res.status(400).json({ error: true, message: "Title is required" });
+    }
+
+    if (!content) {
+        return res.status(400).json({ error: true, message: "Content is required"});
+    }
+    
+    try {
+        const note = new Note({ 
+            title, 
+            content, 
+            tags: tags || [], 
+            userId: req.user.user._id, // Assign the authenticated user's _id to userId
+        });
+
+        await note.save();
+
+        return res.json({ 
+            error: false,
+            note, 
+            message: "Note added successfully" 
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: true, message: "Internal Server Error" });
+    }
+});
+
+// Edit Notes
+
+app.post('/edit-note:noteId', autenticateToken, async (req, res) => {
 
 });
 
 app.listen(8000, () => {
     console.log('Server is running on port 8000');
+    
 });
 
 module.exports = app;
