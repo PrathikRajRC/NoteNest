@@ -6,7 +6,9 @@ import AddEditNotes from './AddEditNotes';
 import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../utils/axiosinstance';
-
+import Toast from "../../components/ToastMessage/toast.jsx";
+import EmptyCard from '../../components/EmptyCard/EmptyCard.jsx';
+import AddNotesImg from '../../assets/images/add.png';
 const Home = () => {
 
     const [openAddEditModal, setOpenEditModal ] = useState({
@@ -14,10 +16,36 @@ const Home = () => {
         type: 'add',
         data: null,
     });
+
+    const [showToastMsg, setShowToastMsg ] = useState({
+        isShown: false,
+        type: 'add',
+        message: "",
+    });
     
+    const [allNotes , setAllNotes] = useState([]);
     const [userInfo , setUserInfo] = useState(null);
 
     const navigate = useNavigate();
+
+    const handleEdit = (noteDetails) => {
+        setOpenEditModal({ isShown: true , data: noteDetails, type: 'edit'});
+    }
+
+    const showToastMessage = (message, type) => {
+        setShowToastMsg({
+            isShown: true,
+            type,
+            message,
+        })
+    };
+
+    const handleCloseToast = () => {
+        setShowToastMsg({
+            isShown: false,
+            message: "",
+        })
+    };
 
     //Get User Info
 
@@ -35,7 +63,47 @@ const Home = () => {
         }
     };
 
+    // Get all Notes
+
+    const getAllNotes = async () => {
+        try {
+            const response = await axiosInstance.get("/get-all-notes");
+
+            if (response.data && response.data.notes) {
+                setAllNotes(response.data.notes);
+            }
+
+        }
+        catch (error) {
+            console.log("An unexpected error occurred.");
+        }
+    };
+
+    // Delete Note
+
+    const deleteNote = async (data) => {
+        const noteId = data._id;
+        try {
+            const response = await axiosInstance.delete('/delete-note/' + noteId);
+
+            if(response.data && !response.data.error){
+                showToastMessage("Note Deleted Successfully", 'delete');
+                getAllNotes();
+            }
+
+        }catch(error) {
+            if(
+                error.response &&
+                error.response.data &&
+                error.response.data.message
+            ){
+               console.log("An unexpected error occurred: ");
+            }
+        }
+    };
+
     useEffect(() => {
+        getAllNotes();
         getUserInfo();
         return () => {};
     }, []);
@@ -45,18 +113,32 @@ const Home = () => {
             <Navbar userInfo = {userInfo} />
 
             <div className='container mx-auto'>
-                <div className='grid grid-cols-3 gap-4 mt-8'>
-                    <NoteCard 
-                        title='Meeting on 7th April' 
-                        date='3rd April' 
-                        content='Meeting on 7th April be ready.'
-                        tags='meeting'
-                        isPinned={true}
-                        onEdit={() => {}}
-                        onDelete={() => {}}
-                        onPinNote={() => {}}
-                    />
+                {allNotes.length > 0 ? (<div className='grid grid-cols-3 gap-4 mt-8'>
+                    {allNotes.map((item, index)=> (
+
+                        <NoteCard 
+
+                            key={item._id}
+                            title={item.title}
+                            date={item.createdOn}
+                            content={item.content}
+                            tags={item.tags}
+                            isPinned={item.isPinned}
+                            onEdit={() => handleEdit(item)}
+                            onDelete={() => deleteNote(item)}
+                            onPinNote={() => {}}
+                        />
+
+                    ))}
+                    
                 </div>
+                ):(
+                    <EmptyCard 
+                    imgSrc={AddNotesImg} 
+                    message={`Start creating your first note! Click the Add button to start`}
+                    
+                    />
+                )}
             </div>
 
             <button 
@@ -96,10 +178,21 @@ const Home = () => {
                             data: null
                         });
                     }}
+
+                    getAllNotes={getAllNotes}
+                    showToastMessage={showToastMessage}
                 
                 />
 
             </Modal>
+
+            <Toast 
+                isShown={showToastMsg.isShown}
+                message={showToastMsg.message}
+                type={showToastMsg.type}
+                onClose={handleCloseToast}
+            
+            />
         </>
     );        
 };
