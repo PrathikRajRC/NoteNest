@@ -275,6 +275,47 @@ app.put('/update-note-pinned/:noteId', autenticateToken, async (req, res) => {
     }
 });
 
+// Search Notes
+
+app.get('/search-notes/', autenticateToken, async (req, res) => {
+    const { user } = req.user;
+    const { query } = req.query;
+
+    // 1. Input Validation
+    if (!query) {
+        return res.status(400).json({ error: true, message: "Search query is required" });
+    }
+
+    try {
+        // 3. Security: Ensure authentication
+        if (!user) {
+            return res.status(401).json({ error: true, message: "Unauthorized" });
+        }
+
+        // 4. Access the user ID properly
+        const userId = user._id;
+
+        // 5. Case-insensitive search
+        const matchingNotes = await Note.find({
+            userId: userId,
+            $or: [
+                { title: { $regex: new RegExp(query, "i") } },
+                { content: { $regex: new RegExp(query, "i") } },
+            ],
+        });
+
+        return res.json({
+            error: false,
+            notes: matchingNotes,
+            message: "Notes fetched successfully",
+        });
+    } catch (error) {
+        // 2. Improved error handling
+        console.error(error);
+        return res.status(500).json({ error: true, message: "Internal server error" });
+    }
+});
+
 
 app.listen(8000, () => {
 
