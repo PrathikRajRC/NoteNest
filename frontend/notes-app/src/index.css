@@ -10,8 +10,12 @@
   }
 
   body {
-    background-color: gainsboro;
+    background-color: rgb(250, 245, 245);
     overflow: hidden;
+    background-image: url("D:/Code/Notes-App/frontend/notes-app/src/assets/images/White.jpg");
+    background-repeat: no-repeat;
+    background-size: cover; /* Add this line */
+    
   }
 }
 
@@ -32,3 +36,4 @@
     @apply text-sm text-slate-800;
   }
 }
+
