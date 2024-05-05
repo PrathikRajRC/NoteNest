@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite'
+// import { defineConfig } from 'vite'
 // import react from '@vitejs/plugin-react'
 // import fs from 'fs';
 // import path from 'path';
@@ -17,10 +17,13 @@ import { defineConfig } from 'vite'
 //   },
 // })
 
+import { defineConfig } from 'vite';
+
 export default defineConfig({
   server: {
-    https: false, // Disable HTTPS
-  },
+    https: {
+      key: 'D:/Code/Notes-App/frontend/notes-app/key.pem',
+      cert: 'D:/Code/Notes-App/frontend/notes-app/cert.pem'
+    }
+  }
 });
-
-

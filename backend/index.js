@@ -8,6 +8,15 @@ const express = require("express");
 const cors = require("cors");
 
 mongoose.connect(config.connectionString);
+// Connection event handlers
+mongoose.connection.on('connected', () => {
+    console.log('Connected to MongoDB');
+});
+
+mongoose.connection.on('error', (err) => {
+    console.error('Failed to connect to MongoDB:', err);
+});
+
 
 const User = require("./models/user.model.js")
 const Note = require("./models/note.model.js");

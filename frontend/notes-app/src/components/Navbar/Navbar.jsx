@@ -1,55 +1,49 @@
-import React ,{useState}from 'react';
-import ProfileInfo from '../Cards/ProfileInfo';
-import { useNavigate } from 'react-router-dom';
-import SearchBar from '../SearchBar/SearchBar';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import ProfileInfo from '../Cards/ProfileInfo';
+import SearchBar from '../SearchBar/SearchBar';
 
+const Navbar = ({ userInfo, onSearchNote, handleClearSearch }) => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
 
-const Navbar = ( {userInfo , onSearchNote, handleClearSearch}) => {
+  const onLogout = () => {
+    localStorage.clear();
+    navigate('/login');
+  };
 
-    const [searchQuery,setSearchQuery] = useState("");
-    const navigate = useNavigate();
+  const handleSearch = () => {
+    if (searchQuery) {
+      onSearchNote(searchQuery);
+    }
+  };
 
-    const onLogout = () => {
-        localStorage.clear();
-        navigate('/login');
-    };
+  const onClearSearch = () => {
+    setSearchQuery("");
+    handleClearSearch();
+  };
 
-    const handleSearch = () => {
-        if(searchQuery){
-            onSearchNote(searchQuery);
-        }
-    };
+  return (
+    <div className="bg-white shadow-lg flex justify-between items-center px-4 py-1">
+      <Link to="/" className="text-lg font-bold text-gray-900 hover:text-gray-800">
+        Note Nest
+      </Link>
 
-    const onClearSearch = () => {
-        setSearchQuery("");
-        handleClearSearch();
-    };
+      <div className="flex-grow mx-2">
+        <SearchBar
+          value={searchQuery}
+          onChange={({ target }) => {
+            setSearchQuery(target.value);
+          }}
+          handleSearch={handleSearch}
+          onClearSearch={onClearSearch}
+        />
+      </div>
 
-    return (
-        <div className='bg-white flex items-centre justify-between px-6 py-2 drop-shadow'>
-            <Link to="/dashboard" className="text-xl font-medium text-black py-2">
-                Note Nest
-            </Link>
-   
-
-            <SearchBar 
-                value={searchQuery}
-                onChange={({target}) => {
-                    setSearchQuery(target.value);
-
-                }}
-                handleSearch={handleSearch}
-                onClearSearch={onClearSearch}
-            />
-
-            <ProfileInfo userInfo = {userInfo}onLogout={onLogout}/>
-    
-        
-        </div>
-
-    );    
-
+      <ProfileInfo userInfo={userInfo} onLogout={onLogout} />
+    </div>
+  );
 };
 
 export default Navbar;

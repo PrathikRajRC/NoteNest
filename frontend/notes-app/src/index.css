@@ -12,9 +12,9 @@
   body {
     background-color: rgb(250, 245, 245);
     overflow: hidden;
-    background-image: url("D:/Code/Notes-App/frontend/notes-app/src/assets/images/White.jpg");
+    background-image: url("D:/Code/Notes-App/frontend/notes-app/src/assets/images/b2.jpg");
     background-repeat: no-repeat;
-    background-size: cover; /* Add this line */
+    background-size: cover;
     
   }
 }

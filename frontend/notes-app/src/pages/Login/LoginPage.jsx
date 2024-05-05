@@ -38,7 +38,7 @@ const Login = () => {
 
             if(response.data && response.data.accessToken) {
                 localStorage.setItem("token", response.data.accessToken)
-                navigate('/dashboard')
+                navigate('/')
             }
         }catch(error) {
             if(error.response && error.response.data && error.response.data.message){
@@ -52,7 +52,7 @@ const Login = () => {
     return (
     <>
         <Navbar/>
-        
+
         <div className='flex items-centre justify-center mt-28 '>
             <div className='w-96 border rounded bg-white px-7 py-10'>
                 <form onSubmit={handleLogin}>
